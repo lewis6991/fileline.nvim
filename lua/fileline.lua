@@ -9,7 +9,7 @@ local function reopen_and_gotoline(file_name, lnum, col)
   vim.cmd.edit{vim.fn.fnameescape(file_name), mods = { keepalt = true }}
 
   vim.api.nvim_buf_delete(bufn, {})
-
+  lnum = math.min(lnum, vim.api.nvim_buf_line_count(0))
   vim.api.nvim_win_set_cursor(0, { lnum, col and col - 1 or 0 })
 
   if vim.fn.foldlevel(lnum) > 0 then
