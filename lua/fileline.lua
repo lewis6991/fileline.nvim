@@ -8,7 +8,12 @@ local function reopen_and_gotoline(file_name, lnum, col)
 
   vim.cmd.edit{vim.fn.fnameescape(file_name), mods = { keepalt = true }}
 
-  vim.api.nvim_buf_delete(bufn, {})
+  --- Deleting the buffer in BufNewFile might cause problems with other
+  --- BufNewFile autocmds so defer the deletion of the buffer.
+  vim.schedule(function()
+    vim.api.nvim_buf_delete(bufn, {})
+  end)
+
   lnum = math.min(lnum, vim.api.nvim_buf_line_count(0))
   vim.api.nvim_win_set_cursor(0, { lnum, col and col - 1 or 0 })
 
